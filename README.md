@@ -120,7 +120,7 @@ source /path/to/.env
 
 REMOTE_USER="<username>"
 REMOTE_HOST="$SERVER_IP"
-REMOTE_DIR="/home/$REMOTE_USER/Go/expo-build-service"
+REMOTE_DIR="/home/$REMOTE_USER/expo-build-service"
 
 # Copy the project files to the remote server
 scp -r . "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"

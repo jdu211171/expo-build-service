@@ -39,33 +39,33 @@ func generateTimestampID() string {
 
 // Clone or update the repository
 func cloneOrUpdateRepo(ctx context.Context, repoURL, clonePath string) error {
-    if strings.ContainsAny(repoURL, ";&") {
-        return fmt.Errorf("invalid repoURL parameter")
-    }
+	if strings.ContainsAny(repoURL, ";&") {
+		return fmt.Errorf("invalid repoURL parameter")
+	}
 
-    // Create the parent directory if it doesn't exist
-    if err := os.MkdirAll(filepath.Dir(clonePath), 0755); err != nil {
-        return fmt.Errorf("error creating parent directory: %v", err)
-    }
+	// Create the parent directory if it doesn't exist
+	if err := os.MkdirAll(filepath.Dir(clonePath), 0755); err != nil {
+		return fmt.Errorf("error creating parent directory: %v", err)
+	}
 
-    // Perform a shallow clone of the main branch
-    cloneCmd := exec.CommandContext(ctx, "git", "clone", "--depth", "1", "--single-branch", "--branch", "main", repoURL, clonePath)
+	// Perform a shallow clone of the main branch
+	cloneCmd := exec.CommandContext(ctx, "git", "clone", "--depth", "1", "--single-branch", "--branch", "main", repoURL, clonePath)
 
-    // Set the GIT_TERMINAL_PROMPT environment variable to prevent interactive prompts
-    cloneCmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
+	// Set the GIT_TERMINAL_PROMPT environment variable to prevent interactive prompts
+	cloneCmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 
-    // Use a buffer to capture output
-    var output bytes.Buffer
-    cloneCmd.Stdout = &output
-    cloneCmd.Stderr = &output
+	// Use a buffer to capture output
+	var output bytes.Buffer
+	cloneCmd.Stdout = &output
+	cloneCmd.Stderr = &output
 
-    // Run the command
-    err := cloneCmd.Run()
-    if err != nil {
-        return fmt.Errorf("error cloning repository: %v, output: %s", err, output.String())
-    }
+	// Run the command
+	err := cloneCmd.Run()
+	if err != nil {
+		return fmt.Errorf("error cloning repository: %v, output: %s", err, output.String())
+	}
 
-    return nil
+	return nil
 }
 
 // Build the application using EAS CLI
@@ -211,7 +211,7 @@ func buildHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Tail the log file
 	done := make(chan struct{})
-	go tailLogFile(w, "/home/distro/Go/expo-build-service/logs/server.log", done)
+	go tailLogFile(w, "/home/distro/expo-build-service/logs/server.log", done)
 
 	// Build the app
 	if err := buildApp(ctx, packagePath, req.Platform, outputFile); err != nil {
@@ -267,7 +267,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	updateMutex.Unlock()
 
 	done := make(chan struct{})
-	go tailLogFile(w, "/home/distro/Go/expo-build-service/logs/server.log", done)
+	go tailLogFile(w, "/home/distro/expo-build-service/logs/server.log", done)
 
 	go func() {
 		defer func() {
@@ -278,7 +278,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 		}()
 
 		// Run the update script
-		cmd := exec.Command("/home/distro/Go/expo-build-service/update_server.sh")
+		cmd := exec.Command("/home/distro/expo-build-service/update_server.sh")
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Printf("Update failed: %v\nOutput: %s", err, string(output))
@@ -364,7 +364,7 @@ func authenticate(next http.HandlerFunc) http.HandlerFunc {
 
 // Initialize logging to a file
 func initLogging() {
-	logDir := "/home/distro/Go/expo-build-service/logs"
+	logDir := "/home/distro/expo-build-service/logs"
 	logFile := filepath.Join(logDir, "server.log")
 
 	// Create log directory if it doesn't exist
