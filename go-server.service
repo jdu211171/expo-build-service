@@ -1,0 +1,17 @@
+[Unit]
+Description=Go Server Service
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=%h/Go/expo-build-service
+ExecStart=%h/Go/expo-build-service/buildHandler
+Restart=on-failure
+RestartSec=5s
+Environment=PORT=8080
+EnvironmentFile=%h/Go/expo-build-service/.env
+
+[Install]
+WantedBy=multi-user.target
