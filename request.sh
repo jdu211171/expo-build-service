@@ -1,10 +1,13 @@
 #!/bin/bash
 
 # Load environment variables from a .env file
-source /path/to/.env
+source ./.env
 
 SERVER_IP="$SERVER_IP"  # Replace with your server's IP address
 AUTH_TOKEN="$AUTH_TOKEN"  # Replace with your actual token
+REPO_URL="$REPO_URL"  # Replace with your repository URL
+PLATFORM="$PLATFORM"  # Replace with the platform (e.g., "android" or "ios")
+PACKAGE_PATH="$PACKAGE_PATH"  # Replace with the package path
 
 # Function to trigger server update
 trigger_update() {
@@ -31,11 +34,11 @@ build_and_download() {
          -H "Content-Type: application/json" \
          -H "Authorization: Bearer $AUTH_TOKEN" \
          -X POST http://$SERVER_IP:8080/build \
-         -d '{
-               "repo_url": "https://github.com/jdu211171/parents-monolithic.git",
-               "platform": "android",
-               "package_path": "parent-notification"
-             }' \
+         -d "{
+               \"repo_url\": \"$REPO_URL\",
+               \"platform\": \"$PLATFORM\",
+               \"package_path\": \"$PACKAGE_PATH\"
+             }" \
          -D - \
          -o $TMP_RESPONSE)
 
