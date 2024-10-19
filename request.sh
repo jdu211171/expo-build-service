@@ -25,6 +25,11 @@ trigger_update() {
     fi
 }
 
+echo $SERVER_IP
+echo $AUTH_TOKEN
+echo $REPO_URL
+echo $PLATFORM
+echo $PACKAGE_PATH
 # Function to build and download APK
 build_and_download() {
     TMP_RESPONSE=$(mktemp)
@@ -66,11 +71,11 @@ build_and_download() {
 }
 
 # Execute the functions
-trigger_update
+# trigger_update
 
 # Wait for the server to restart
-echo "Waiting for the server to restart..."
-sleep 60  # Adjust the sleep duration based on your update process
+# echo "Waiting for the server to restart..."
+# sleep 60  # Adjust the sleep duration based on your update process
 
 # Build and download the APK
 build_and_download
