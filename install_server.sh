@@ -18,35 +18,6 @@ SYSTEMD_DIR="/etc/systemd/system"
 SERVICE_NAME="go-server.service"
 GO_EXECUTABLE="buildHandler"
 
-# Update package lists
-echo "Updating package lists..."
-sudo swupd update
-sudo swupd diagnose
-sudo swupd repair
-flatpak update
-
-# Install required packages
-echo "Installing required packages..."
-sudo swupd bundle-add nodejs-basic go-basic gh
-
-# Install eas-cli globally using npm
-if ! command -v eas &> /dev/null; then
-  echo "Installing eas-cli..."
-  npm install -g eas-cli
-fi
-
-# Install Java (Amazon Corretto 17)
-echo "Installing Java (Amazon Corretto 17)..."
-# Ensure the script is executable
-chmod +x install_corretto_server.sh
-# Run the Java installation script
-./install_corretto_server.sh
-
-# Install Android SDK
-echo "Installing Android SDK..."
-chmod +x setup_android_sdk_server.sh
-./setup_android_sdk_server.sh
-
 # Ensure Go is in the PATH
 export PATH=$PATH:/usr/local/go/bin  # Adjust this path if Go is installed elsewhere
 

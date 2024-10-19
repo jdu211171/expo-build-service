@@ -211,7 +211,7 @@ func buildHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Tail the log file
 	done := make(chan struct{})
-	go tailLogFile(w, "/home/distro/expo-build-service/logs/server.log", done)
+	go tailLogFile(w, "/home/server/expo-build-service/logs/server.log", done)
 
 	// Build the app
 	if err := buildApp(ctx, packagePath, req.Platform, outputFile); err != nil {
@@ -267,7 +267,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	updateMutex.Unlock()
 
 	done := make(chan struct{})
-	go tailLogFile(w, "/home/distro/expo-build-service/logs/server.log", done)
+	go tailLogFile(w, "/home/server/expo-build-service/logs/server.log", done)
 
 	go func() {
 		defer func() {
@@ -278,7 +278,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 		}()
 
 		// Run the update script
-		cmd := exec.Command("/home/distro/expo-build-service/update_server.sh")
+		cmd := exec.Command("/home/server/expo-build-service/update_server.sh")
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Printf("Update failed: %v\nOutput: %s", err, string(output))
@@ -364,7 +364,7 @@ func authenticate(next http.HandlerFunc) http.HandlerFunc {
 
 // Initialize logging to a file
 func initLogging() {
-	logDir := "/home/distro/expo-build-service/logs"
+	logDir := "/home/server/expo-build-service/logs"
 	logFile := filepath.Join(logDir, "server.log")
 
 	// Create log directory if it doesn't exist

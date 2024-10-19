@@ -144,8 +144,8 @@ case "$ACTION" in
         uninstall_android_sdk
         ;;
     *)
-        echo "Invalid option. Please run the script again and choose 'i' to install or 'u' to uninstall."
-        exit 1
+        echo "Invalid option. By default, installation will proceed."
+        echo "Starting installation..."
+        install_android_sdk
         ;;
 esac
-

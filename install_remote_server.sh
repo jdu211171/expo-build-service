@@ -8,6 +8,37 @@ REMOTE_HOST="$SERVER_IP"
 REMOTE_DIR="/home/$REMOTE_USER/expo-build-service"
 REMOTE_PASSWORD="$REMOTE_PASSWORD"
 
+# Update package lists
+echo "Updating package lists..."
+sudo swupd update
+sudo swupd diagnose
+sudo swupd repair
+flatpak update
+
+# Install required packages
+echo "Installing required packages..."
+sudo swupd bundle-add nodejs-basic go-basic gh
+
+# Install eas-cli globally using npm
+if ! command -v eas &> /dev/null; then
+  echo "Installing eas-cli..."
+  npm install -g eas-cli
+fi
+
+# Install Java (Amazon Corretto 17)
+echo "Installing Java (Amazon Corretto 17)..."
+# Ensure the script is executable
+chmod +x install_corretto_server.sh
+# Run the Java installation script
+./install_corretto_server.sh
+
+# Install Android SDK
+echo "Installing Android SDK..."
+chmod +x setup_android_sdk_server.sh
+./setup_android_sdk_server.sh
+
+source .bashrc
+
 # Create a tarball of the contents of the current directory in a temporary directory
 TEMP_DIR=$(mktemp -d)
 TARBALL="$TEMP_DIR/expo-build-service.tar.gz"
