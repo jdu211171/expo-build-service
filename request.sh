@@ -25,11 +25,11 @@ trigger_update() {
     fi
 }
 
-echo $SERVER_IP
-echo $AUTH_TOKEN
-echo $REPO_URL
-echo $PLATFORM
-echo $PACKAGE_PATH
+# echo $SERVER_IP
+# echo $AUTH_TOKEN
+# echo $REPO_URL
+# echo $PLATFORM
+# echo $PACKAGE_PATH
 # Function to build and download APK
 build_and_download() {
     TMP_RESPONSE=$(mktemp)
