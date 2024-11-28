@@ -17,7 +17,7 @@ flatpak update
 
 # Install required packages
 echo "Installing required packages..."
-sudo swupd bundle-add nodejs-basic go-basic gh ansible
+sudo swupd bundle-add nodejs-basic go-basic gh ansible wget
 
 # Install eas-cli globally using npm
 if ! command -v eas &> /dev/null; then
