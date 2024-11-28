@@ -26,3 +26,4 @@ go.work.sum
 
 # env file
 .env
+http-client.env.json

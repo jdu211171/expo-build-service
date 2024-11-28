@@ -252,6 +252,7 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	if token != "Bearer your-secret-token" {
 		log.Println("Unauthorized access attempt")
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		w.Write([]byte(r.Header.Get("Authorization")))
 		return
 	}
 

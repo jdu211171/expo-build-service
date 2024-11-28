@@ -1,0 +1,17 @@
+### Update response
+GET http://{{SERVER_IP}}:8080/health
+
+### Trigger server update
+GET http://{{SERVER_IP}}:8080/update
+Authorization: Bearer {{AUTH_TOKEN}}
+
+### Build and download APK
+POST http://{{SERVER_IP}}:8080/build
+Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
+
+{
+  "repo_url": "{{REPO_URL}}",
+  "platform": "{{PLATFORM}}",
+  "package_path": "{{PACKAGE_PATH}}"
+}
