@@ -17,25 +17,35 @@ flatpak update
 
 # Install required packages
 echo "Installing required packages..."
-sudo swupd bundle-add nodejs-basic go-basic gh
+sudo swupd bundle-add nodejs-basic go-basic gh ansible
 
 # Install eas-cli globally using npm
 if ! command -v eas &> /dev/null; then
   echo "Installing eas-cli..."
   npm install -g eas-cli
 fi
-
-# Install Java (Amazon Corretto 17)
-echo "Installing Java (Amazon Corretto 17)..."
-# Ensure the script is executable
-chmod +x install_corretto_server.sh
-# Run the Java installation script
-./install_corretto_server.sh
-
-# Install Android SDK
-echo "Installing Android SDK..."
-chmod +x setup_android_sdk_server.sh
-./setup_android_sdk_server.sh
+# Check if JDK and other installers are present
+sshpass -p "$REMOTE_PASSWORD" ssh "$REMOTE_USER@$REMOTE_HOST" << EOF
+  if [ ! -d "/usr/lib/jvm/java-17-amazon-corretto" ] || [ ! -d "/opt/android-sdk" ]; then
+    echo "Required directories not found. Proceeding with installation..."
+    
+    # Install Java (Amazon Corretto 17)
+    if [ ! -d "/usr/lib/jvm/java-17-amazon-corretto" ]; then
+      echo "Installing Java (Amazon Corretto 17)..."
+      chmod +x install_corretto_server.sh
+      ./install_corretto_server.sh
+    fi
+    
+    # Install Android SDK
+    if [ ! -d "/opt/android-sdk" ]; then
+      echo "Installing Android SDK..."
+      chmod +x setup_android_sdk_server.sh
+      ./setup_android_sdk_server.sh
+    fi
+  else
+    echo "JDK and Android SDK are already installed."
+  fi
+EOF
 
 source .bashrc
 
