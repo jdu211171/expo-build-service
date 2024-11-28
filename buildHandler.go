@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -125,7 +126,10 @@ func tailLogFile(w http.ResponseWriter, logFilePath string, done chan struct{}) 
 	for {
 		select {
 		case <-done:
-			cmd.Process.Kill()
+			err := cmd.Process.Kill()
+			if err != nil {
+				return
+			}
 			return
 		default:
 			line, err := reader.ReadString('\n')
@@ -173,7 +177,12 @@ func buildHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	defer os.RemoveAll(tempDir) // Clean up after build
+	defer func(path string) {
+		err := os.RemoveAll(path)
+		if err != nil {
+			log.Println("Failed to remove temporary directory:", err)
+		}
+	}(tempDir) // Clean up after build
 
 	clonePath := filepath.Join(tempDir, "repo")
 
@@ -235,7 +244,12 @@ func buildHandler(w http.ResponseWriter, r *http.Request) {
 		close(done)
 		return
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 
 	if _, err := io.Copy(w, file); err != nil {
 		log.Println("Failed to send file to client:", err)
@@ -290,7 +304,10 @@ func updateHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, "Server update initiated.")
+	_, err := fmt.Fprintln(w, "Server update initiated.")
+	if err != nil {
+		return
+	}
 }
 
 // Get the size of a file
@@ -304,9 +321,12 @@ func fileSize(filePath string) int64 {
 }
 
 // Health check handler
-func healthHandler(w http.ResponseWriter, r *http.Request) {
+func healthHandler(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, "Server is up and running.")
+	_, err := fmt.Fprintln(w, "Server is up and running.")
+	if err != nil {
+		return
+	}
 }
 
 // Graceful shutdown
@@ -327,7 +347,7 @@ func main() {
 	go func() {
 		log.Println("Server started at :8080")
 		fmt.Println("Server started at :8080")
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("Server failed: %v", err)
 		}
 	}()
