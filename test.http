@@ -1,0 +1,17 @@
+### Health Check
+GET http://{{SERVER_IP}}:{{SERVER_PORT}}/health
+
+### Trigger Server Update
+GET http://{{SERVER_IP}}:{{SERVER_PORT}}/update
+Authorization: Bearer {{UPDATE_AUTH_TOKEN}}
+
+### Build and Download APK
+POST http://{{SERVER_IP}}:{{SERVER_PORT}}/build
+Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
+
+{
+  "repo_url": "{{REPO_URL}}",
+  "platform": "{{PLATFORM}}",
+  "package_path": "{{PACKAGE_PATH}}"
+}
